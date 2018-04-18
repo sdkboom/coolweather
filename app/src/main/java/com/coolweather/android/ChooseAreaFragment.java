@@ -119,12 +119,20 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY){
                     Toast.makeText(getContext(),countyList.get(position).getWeatherId().toString(),Toast.LENGTH_LONG).show();
-                    //若点击县级目录时   启动WeatherActivity
-                    Intent intent = new Intent(getActivity(),WeatherActivity.class);
-                    intent.putExtra("weather_id",countyList.get(position).getWeatherId());
-                    startActivity(intent);
-                    //关闭当前活动
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity){
+                        //若点击县级目录时   启动WeatherActivity
+                        Intent intent = new Intent(getActivity(),WeatherActivity.class);
+                        intent.putExtra("weather_id",countyList.get(position).getWeatherId());
+                        startActivity(intent);
+                        //关闭当前活动
+                        getActivity().finish();
+                    }else if(getActivity() instanceof  WeatherActivity){
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeFresh.setRefreshing(true);
+                        activity.requestWeather(countyList.get(position).getWeatherId());
+                    }
+
                     Log.e(TAG,"县级目录点击事件执行完毕");
                 }
             }
